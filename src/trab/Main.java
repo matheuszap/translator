@@ -12,16 +12,19 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         Translator t = new Translator();
-        List<Config> configurations = new LinkedList<Config>();
+        List<Config> machine = new LinkedList<Config>();
 
         String filename = "/home/zap/Downloads/odd.in";
+        machine = t.read_machine(filename);
 
-        configurations = t.read_machine(filename);
+        machine = t.add_initial_end_states(machine);
 
-        for(int i=0; i<configurations.size(); i++) {
-            System.out.println(configurations.get(i).toString());
+
+        for(int i=0; i<machine.size(); i++) {
+            System.out.println(machine.get(i).toString());
         }
+
+
+
     }
-
-
 }
