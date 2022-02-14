@@ -78,5 +78,43 @@ public class Translator {
         return machine;
     }
 
+    public boolean states_on_list(Config c, List<String> states) {
+        boolean is_on_list = false;
+        for(int i=0; i<states.size(); i++) {
+            if (states.get(i).equals(c.getCurrent_state())) {
+                is_on_list = true;
+            }
+        }
+        return is_on_list;
+    }
+
+    public List<String> get_states(List<Config> m){
+        List<String> states = new LinkedList<String>();
+
+        for(int i=0; i<m.size(); i++) {
+            boolean b = states_on_list(m.get(i), states);
+            if(b == false) {
+                states.add(m.get(i).getCurrent_state());
+            }
+        }
+        return states;
+    }
+
+    public List<Config> right_limit_states(List<Config> machine){
+        List<String> states = get_states(machine);
+
+        for(int i=0; i<states.size(); i++) {
+            Config w_end = new Config("w_end_" + i, "_", "#", "l", String.valueOf(i));
+            machine.add(w_end);
+        }
+
+        for(int i=0; i<states.size(); i++) {
+            Config limit_reached = new Config(String.valueOf(i), "#", "_", "r", "w_end_"+i);
+            machine.add(limit_reached);
+        }
+
+        return machine;
+    }
+
 
 }
