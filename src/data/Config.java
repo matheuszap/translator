@@ -1,4 +1,4 @@
-package trab;
+package data;
 
 public class Config {
     private String current_state;
