@@ -1,7 +1,6 @@
 package system;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -19,6 +18,7 @@ public class Translator {
 
             Config c = new Config(info[0], info[1], info[2], info[3], info[4]);
             machine.add(c);
+
         }
         return machine;
     }
@@ -198,6 +198,18 @@ public class Translator {
     public int original_states(List<Config> machine){
         int size = get_states(machine).size();
         return size - 1;
+    }
+
+    public void write_file(List<Config> machine){
+        try {
+            FileWriter w = new FileWriter("saida.out");
+            for(int i=0; i<machine.size(); i++) {
+                w.write(machine.get(i).getCurrent_state() + " " + machine.get(i).getCurrent_symbol() + " " + machine.get(i).getNew_symbol() + " " + machine.get(i).getDirection() + " " + machine.get(i).getNew_state() + "\n");
+            }
+            w.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

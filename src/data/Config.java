@@ -58,7 +58,6 @@ public class Config {
         this.new_state = new_state;
     }
 
-
     @Override
     public String toString() {
         return current_state + " " + current_symbol + " " + new_symbol + " " + direction + " " + new_state;
