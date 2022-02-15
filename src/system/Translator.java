@@ -49,7 +49,7 @@ public class Translator {
         List<String> symbols = get_symbols(machine);
 
         for(int i=0; i<symbols.size(); i++){
-            if(!symbols.get(i).equals("_")){
+            if(!symbols.get(i).equals("_") && !symbols.get(i).equals("&") && !symbols.get(i).equals("#")){
                 Config s_begin = new Config("s_begin", symbols.get(i), "*", "l", "s_begin");
                 machine.add(s_begin);
             }
@@ -58,7 +58,7 @@ public class Translator {
         machine.add(s_begin_blank);
 
         for(int i=0; i<symbols.size(); i++){
-            if(!symbols.get(i).equals("_")){
+            if(!symbols.get(i).equals("_") && !symbols.get(i).equals("&") && !symbols.get(i).equals("#")){
                 Config s_end = new Config("s_end", symbols.get(i), "*", "r", "s_end");
                 machine.add(s_end);
             }
@@ -67,7 +67,7 @@ public class Translator {
         machine.add(s_end_blank);
 
         for(int i=0; i<symbols.size(); i++){
-            if(!symbols.get(i).equals("_")){
+            if(!symbols.get(i).equals("_") && !symbols.get(i).equals("&") && !symbols.get(i).equals("#")){
                 Config s_start = new Config("s_start", symbols.get(i), "*", "l", "s_start");
                 machine.add(s_start);
             }
@@ -114,6 +114,81 @@ public class Translator {
         }
 
         return machine;
+    }
+
+    public List<Config> left_limit_states(List<Config> machine, int original_size) {
+        List<String> symbols_1 = get_symbols(machine);
+        List<String> symbols_2 = get_symbols(machine);
+        List<String> symbols_3 = get_symbols(machine);
+
+        for(int i=0; i<symbols_1.size(); i++) { // symbols: 0, 1, x, _
+            if (!symbols_1.get(i).equals("_") && !symbols_1.get(i).equals("#")) {
+                for (int j = 0; j < symbols_2.size(); j++) {
+                    if (!symbols_2.get(j).equals("#")) { // symbols: 0, 1, x, _
+                        if (symbols_2.get(j).equals("_")) {
+                            Config w = new Config("w" + symbols_1.get(i), symbols_2.get(j), symbols_1.get(i), "r", "wb");
+                            machine.add(w);
+                        } else {
+                            Config w = new Config("w" + symbols_1.get(i), symbols_2.get(j), symbols_1.get(i), "r", "w" + symbols_2.get(j));
+                            machine.add(w);
+                        }
+                    }
+                }
+            }
+        }
+
+        for(int i=0; i<symbols_1.size(); i++) { // symbols: 0, 1, x, _
+            if(symbols_1.get(i).equals("_") && !symbols_1.get(i).equals("#")) {
+                for (int j = 0; j < symbols_2.size(); j++) {
+                    if (!symbols_2.get(j).equals("#")) { // symbols: 0, 1, x, _
+                        if (symbols_2.get(j).equals("_")) {
+                            Config wb = new Config("wb", symbols_2.get(j), "_", "r", "wb");
+                            machine.add(wb);
+                        }else{
+                            Config wb = new Config("wb", symbols_2.get(j), "_", "r", "w" + symbols_2.get(j));
+                            machine.add(wb);
+                        }
+                    }
+                }
+            }
+        }
+
+        for(int i=0; i<symbols_1.size(); i++){
+            if(!symbols_1.get(i).equals("#") && !symbols_1.get(i).equals("_")){
+                Config w_end = new Config("w" + symbols_1.get(i), "#", "_", "r", "w_end_" + symbols_1.get(i));
+                machine.add(w_end);
+            }else if(symbols_1.get(i).equals("#")){
+                Config w_end_b = new Config("wb", "#", "*", "l", "return");
+                machine.add(w_end_b);
+            }
+        }
+
+        // w_main
+
+        for(int i=0; i<symbols_1.size(); i++){
+            if(!symbols_1.get(i).equals("#") && !symbols_1.get(i).equals("_")){
+                Config w_main = new Config("w_main", symbols_1.get(i), "_", "r", "w" + symbols_1.get(i));
+                machine.add(w_main);
+            }else if(symbols_1.get(i).equals("_")){
+                Config w_main = new Config("w_main", symbols_1.get(i), "_", "r", "wb");
+                machine.add(w_main);
+            }
+        }
+
+        List<String> states = get_states(machine);
+
+        for(int i=0; i<states.size(); i++) {
+            if(i>original_size) return machine;
+            Config limit_reached = new Config(String.valueOf(i), "&", "*", "r", "w_main");
+            machine.add(limit_reached);
+        }
+
+        return machine;
+    }
+
+    public int original_states(List<Config> machine){
+        int size = get_states(machine).size();
+        return size - 1;
     }
 
 

@@ -6,7 +6,6 @@ public class Config {
     private String new_symbol;
     private String direction;
     private String new_state;
-
     public Config(){
 
     }
@@ -58,6 +57,7 @@ public class Config {
     public void setNew_state(String new_state) {
         this.new_state = new_state;
     }
+
 
     @Override
     public String toString() {
