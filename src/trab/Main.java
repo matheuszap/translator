@@ -24,8 +24,5 @@ public class Main {
         for(int i=0; i<machine.size(); i++) {
             System.out.println(machine.get(i).toString());
         }
-
-
-
     }
 }

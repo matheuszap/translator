@@ -119,7 +119,6 @@ public class Translator {
     public List<Config> left_limit_states(List<Config> machine, int original_size) {
         List<String> symbols_1 = get_symbols(machine);
         List<String> symbols_2 = get_symbols(machine);
-        List<String> symbols_3 = get_symbols(machine);
 
         for(int i=0; i<symbols_1.size(); i++) { // symbols: 0, 1, x, _
             if (!symbols_1.get(i).equals("_") && !symbols_1.get(i).equals("#")) {
@@ -164,7 +163,6 @@ public class Translator {
         }
 
         // w_main
-
         for(int i=0; i<symbols_1.size(); i++){
             if(!symbols_1.get(i).equals("#") && !symbols_1.get(i).equals("_")){
                 Config w_main = new Config("w_main", symbols_1.get(i), "_", "r", "w" + symbols_1.get(i));
@@ -172,6 +170,17 @@ public class Translator {
             }else if(symbols_1.get(i).equals("_")){
                 Config w_main = new Config("w_main", symbols_1.get(i), "_", "r", "wb");
                 machine.add(w_main);
+            }
+        }
+
+        // return
+        for(int i=0; i<symbols_1.size(); i++){
+            if(!symbols_1.get(i).equals("#") && !symbols_1.get(i).equals("_")){
+                Config r = new Config("return", symbols_1.get(i), "*", "l", "return");
+                machine.add(r);
+            }else if(symbols_1.get(i).equals("_")){
+                Config r_b = new Config("return", symbols_1.get(i), "*", "r", "3");
+                machine.add(r_b);
             }
         }
 
